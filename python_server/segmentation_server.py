@@ -126,7 +126,7 @@ class SegmentationProcessor:
             
             # Procesar con segmenter
             try:
-                results = self.segmenter.process(   )
+                results = self.segmenter.process(frame_rgb)
                 self.segmenter_error_count = 0  # Resetear contador si tiene éxito
             except ValueError as e:
                 if "_graph is None in SolutionBase" in str(e):
