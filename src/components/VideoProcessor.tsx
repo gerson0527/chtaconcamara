@@ -467,7 +467,7 @@ const VideoProcessor: React.FC<VideoProcessorProps> = ({
           console.log(`Enviando frame con nuevo modo: ${currentBackground}`);
         }
         
-        const scale = 0.5;
+        const scale = 0.75; // Aumentado de 0.5 para mejor calidad
         const canvas = new OffscreenCanvas(
           videoRef.current.videoWidth * scale,
           videoRef.current.videoHeight * scale
@@ -482,7 +482,7 @@ const VideoProcessor: React.FC<VideoProcessorProps> = ({
           0, 0, canvas.width, canvas.height
         );
         
-        const blob = await canvas.convertToBlob({ type: 'image/jpeg', quality: 0.8 });
+        const blob = await canvas.convertToBlob({ type: 'image/jpeg', quality: 0.9 }); // Aumentado de 0.8
         const reader = new FileReader();
         
         reader.onloadend = () => {
@@ -533,15 +533,23 @@ const VideoProcessor: React.FC<VideoProcessorProps> = ({
         return;
       }
 
+      // Usar la resolución nativa del video para el canvas
       canvasRef.current!.width = videoRef.current.videoWidth;
       canvasRef.current!.height = videoRef.current.videoHeight;
       
+      console.log(`Inicializando canvas con resolución: ${canvasRef.current!.width}x${canvasRef.current!.height}`);
+      
       const ctx = canvasRef.current!.getContext('2d', {
         willReadFrequently: true,
-        alpha: false
+        alpha: false,
+        desynchronized: false // Desactivar para mejor calidad
       });
       
       if (ctx) {
+        // Configurar para mejor calidad
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        
         ctxRef.current = ctx;
         processFrame();
       }
@@ -839,6 +847,13 @@ const VideoProcessor: React.FC<VideoProcessorProps> = ({
       <canvas
         ref={canvasRef}
         className="w-full aspect-video rounded-lg shadow-xl"
+        style={{
+          width: '95vw',          // Aumentado de 90vw para usar más espacio
+          maxWidth: '1920px',     // Aumentado de 1280px para mayor resolución
+          height: 'auto',         // Mantener proporción
+          margin: '0 auto',       // Centrar horizontalmente
+          imageRendering: 'high-quality' // Mejorar la calidad de renderizado
+        }}
       />
       <div className="absolute top-2 right-2 bg-black/50 px-2 py-1 rounded text-white font-mono">
         {fps} FPS

@@ -64,12 +64,17 @@ const VideoCall: React.FC = () => {
         const constraints: MediaStreamConstraints = {
           video: retryCount === 0 
             ? { 
-                width: { ideal: 1280 }, 
-                height: { ideal: 720 },
-                facingMode: 'user'
+                width: { ideal: 1920 }, 
+                height: { ideal: 1080 },
+                facingMode: 'user',
+                frameRate: { ideal: 30 }
               }
             : retryCount === 1
-              ? { facingMode: 'user' } // Segundo intento: solo especificar cámara frontal
+              ? { 
+                  width: { ideal: 1280 },
+                  height: { ideal: 720 },
+                  facingMode: 'user' 
+                } // Segundo intento: resolución HD
               : true, // Último intento: cualquier cámara
           audio: false
         };
@@ -155,7 +160,7 @@ const VideoCall: React.FC = () => {
   }, []);
 
   return (
-    <div className="relative w-full h-full flex flex-col items-center justify-center bg-gray-900">
+    <div className="relative w-full h-full flex flex-col items-center justify-center bg-gray-900" style={{ minHeight: '90vh' }}>
       <video 
         ref={videoRef}
         autoPlay
@@ -164,8 +169,8 @@ const VideoCall: React.FC = () => {
         style={{ 
           position: 'absolute',
           left: '-9999px',  // Fuera de la pantalla pero aún activo
-          width: '640px',
-          height: '480px'
+          width: '1280px',  // Aumentado de 840px
+          height: '1280px'  // Aumentado de 880px
         }}
       />
       
